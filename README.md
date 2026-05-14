@@ -1,171 +1,140 @@
-# Reflect 🌙
+# Reflect
 
-Reflect is an AI-assisted mood journal for iOS that makes emotional check-ins fast, beautiful, and insightful.  
+Reflect is an AI-assisted mood journal for iOS that makes emotional check-ins fast, beautiful, and insightful.
 Track how you feel in seconds, visualize your emotional patterns, and reflect with a clean, glassmorphism-inspired interface.
 
-> MVP status: 🚧 In active development – core features are being built.
+> MVP status: In active development — core features are being built.
 
 ---
 
-## ✨ Features
+## Features
 
-- **One-tap mood check-ins** – Log how you feel with a simple slider and a few taps.
-- **Emotion tags & notes** – Add context with tags (e.g. “work”, “relationships”, “health”) and optional notes.
-- **Trends & insights** – View weekly and monthly charts to understand mood patterns over time.
-- **Liquid Glass UI** – Modern glassmorphism-inspired cards and panels with soft blur and depth.
-- **Gentle reminders** – Optional local notifications to build a consistent check-in habit.
-- **Privacy-first** – All data stored securely on-device by default, with optional cloud sync.
-
----
-
-## 🧠 Concept & Goals
-
-Reflect is built as a portfolio-quality app to explore:
-
-- **Mental wellbeing UX** – Reduce friction so check-ins take seconds, not minutes.
-- **Modern iOS design** – Experiment with Apple’s “Liquid Glass” aesthetic using SwiftUI.
-- **Clean architecture** – MVVM + modular structure that’s easy to extend.
-- **Backend-ready** – Local-first with an optional Supabase backend for sync (planned).
-
-This project is intentionally scoped as an MVP so new features can be added incrementally.
+- **One-tap mood check-ins** — Log how you feel with a simple slider and a few taps.
+- **Emotion tags & notes** — Add context with tags (e.g. "work", "relationships", "health") and optional notes.
+- **Trends & insights** — View weekly and monthly charts to understand mood patterns over time.
+- **Liquid Glass UI** — Modern glassmorphism-inspired cards and panels with soft blur and depth.
+- **Privacy-first** — All data stored securely on-device by default.
 
 ---
 
-## 🛠 Tech Stack
+## Architecture
+
+| Layer | Folder | Purpose |
+|-------|--------|---------|
+| **Model** | `Models/` | `MoodEntry` — Codable value type (id, date, score 1–5, tags, note) |
+| **Persistence** | `Services/Persistence/` | `MoodStore` — `@Observable` store, JSON file I/O |
+| **ViewModels** | `ViewModels/` | One per screen; owns business logic, exposes derived state |
+| **Views** | `Views/{CheckIn,Journal,Insights}/` | SwiftUI screens, purely declarative |
+| **Design System** | `DesignSystem/` | Color tokens, typography scale, reusable `GlassCard` component |
+
+Pattern: **MVVM** (Model–View–ViewModel)
+Platform: iOS 17+, SwiftUI-only, zero external dependencies.
+
+---
+
+## Tech Stack
 
 - **Language:** Swift, SwiftUI
 - **Architecture:** MVVM
-- **Minimum iOS:** iOS 17+ (adjust as needed)
-- **Storage (MVP):** Core Data / SwiftData for local persistence
-- **Backend (Planned):** Supabase (Postgres + Auth + Realtime)
+- **Minimum iOS:** iOS 17+
+- **Storage (MVP):** JSON file persistence (swap in SwiftData/CloudKit later)
 - **UI:** SwiftUI, custom blur/overlay components for glassmorphism
-- **Charts:** SwiftUI Charts / custom chart components
+- **Charts:** Swift Charts framework
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 Reflect/
   ├─ ReflectApp.swift
+  ├─ ContentView.swift
   ├─ Models/
+  │   └─ MoodEntry.swift
   ├─ ViewModels/
+  │   ├─ CheckInViewModel.swift
+  │   ├─ JournalViewModel.swift
+  │   └─ InsightsViewModel.swift
   ├─ Views/
-  │   ├─ CheckIn/
-  │   ├─ Journal/
-  │   └─ Insights/
+  │   ├─ CheckIn/CheckInView.swift
+  │   ├─ Journal/JournalView.swift
+  │   └─ Insights/InsightsView.swift
   ├─ Services/
-  │   ├─ Persistence/
-  │   └─ Notifications/
+  │   └─ Persistence/MoodStore.swift
   ├─ DesignSystem/
-  │   ├─ Colors.swift
-  │   ├─ Typography.swift
-  │   └─ Components/
-  └─ Resources/
-      ├─ Assets.xcassets
-      └─ Localizable.strings
+  │   ├─ Colors/ColorTokens.swift
+  │   ├─ Typography/Typography.swift
+  │   └─ Components/GlassCard.swift
+  └─ Assets.xcassets/
 ```
 
-- `DesignSystem` holds color tokens, typography, reusable components (glass cards, buttons, etc.).
-- `Services` encapsulates Core Data / SwiftData logic and notification scheduling.
+---
+
+## Core Screens (MVP)
+
+1. **Check-In** — Mood score (1–5), emotion tag chips, optional note field, save.
+2. **Journal** — Searchable, day-grouped list of past entries with swipe-to-delete.
+3. **Insights** — Swift Charts mood trend line, streak counter, average score, top tags.
 
 ---
 
-## 🧩 Core Screens (MVP)
+## Design Tokens
 
-- **Check-in screen**
-  - Mood slider (very low → very high)
-  - Emotion tag chips (happy, anxious, focused, tired, etc.)
-  - Optional note field
-- **Timeline / Journal**
-  - List of past entries grouped by day
-  - Quick glance of mood score + key tags
-- **Insights**
-  - Basic line/bar chart of mood over the last 7 / 30 days
-  - Simple stats (average mood, streaks, most frequent tags)
+The design system lives in `DesignSystem/` and provides:
+
+- **ColorTokens** — Adaptive light/dark palette with programmatic hex fallbacks
+- **Typography** — Rounded `.rf.*` font scale (largeTitle through caption)
+- **GlassCard** — Frosted-glass container (ultraThinMaterial + transparency + gradient border + soft shadow)
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- Xcode VERSION (e.g. 16.x)
+- Xcode 16+
 - iOS 17+ simulator or device
-- Swift 5.9+
 
 ### Setup
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/YOUR_GITHUB_USERNAME/reflect-mood-journal-ios.git
-   cd reflect-mood-journal-ios
+   git clone https://github.com/aymandakir/reflect.git
+   cd reflect
    ```
 
 2. Open the project in Xcode:
 
    ```bash
    open Reflect.xcodeproj
-   # or
-   open Reflect.xcworkspace
    ```
 
-3. Build & run on simulator or device (⌘ + R).
-
-### Optional: Supabase Setup (Planned)
-
-> Supabase integration is planned but optional for the MVP.
-
-1. Create a new Supabase project at https://supabase.com
-2. Configure tables for `mood_entries` and `tags`
-3. Add your Supabase URL and anon key to a `Secrets.xcconfig` file (not committed)
-4. Wire up sync in `SupabaseSyncService` (coming soon)
+3. Build & run on simulator or device (Cmd+R).
 
 ---
 
-## 🧪 Testing
+## Roadmap
 
-- Unit tests for:
-  - MoodEntry model
-  - ViewModels (check-in logic, insights calculations)
-- Snapshot tests (planned) for key screens with different themes.
-
-Run tests from Xcode (⌘ + U).
-
----
-
-## 🧱 Roadmap
-
-- [ ] Onboarding flow with explanation of how mood tracking helps
+- [ ] Onboarding flow
+- [ ] SwiftData migration for richer persistence
 - [ ] Supabase sync for cross-device backups
 - [ ] Home screen widgets for quick check-ins
 - [ ] WatchOS companion app
-- [ ] More advanced insights (trigger analysis by tags)
 - [ ] Export data as CSV
 
 ---
 
-## 🎨 Design
-
-- **Design style:** Minimal, soft gradients, glassmorphism-inspired cards.
-- **Color system:** Neutral background + single accent color, with dark mode support.
-- **Typography:** Large, bold titles for mood level, calm body text for entries.
-
-Figma file: `LINK_TO_FIGMA_HERE` (if public).
-
----
-
-## 📸 Screenshots
+## Screenshots
 
 > Add screenshots or GIFs here once UI is ready.
 
 | Check-in | Journal | Insights |
-|---------|---------|----------|
-| IMAGE_1 | IMAGE_2 | IMAGE_3  |
+|----------|---------|----------|
+| IMAGE_1  | IMAGE_2 | IMAGE_3  |
 
 ---
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
