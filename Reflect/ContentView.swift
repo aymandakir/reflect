@@ -1,9 +1,12 @@
 import SwiftUI
 
 /// Root view — a tab bar with Check-In, Journal, and Insights.
+/// Shows a full-screen onboarding flow on first launch.
 struct ContentView: View {
     var store: MoodStore
 
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var showOnboarding = false
     @State private var selectedTab: Tab = .checkIn
     @State private var checkInVM: CheckInViewModel?
     @State private var journalVM: JournalViewModel?
@@ -22,17 +25,33 @@ struct ContentView: View {
             }
 
             SwiftUI.Tab(Tab.journal.rawValue, systemImage: "book.fill", value: .journal) {
-                JournalView(vm: makeJournalVM()) { entry in
+                JournalView(vm: makeJournalVM(), onEdit: { entry in
                     makeCheckInVM().beginEditing(entry)
                     selectedTab = .checkIn
-                }
+                }, onLogMood: {
+                    selectedTab = .checkIn
+                })
             }
 
             SwiftUI.Tab(Tab.insights.rawValue, systemImage: "chart.xyaxis.line", value: .insights) {
-                InsightsView(vm: makeInsightsVM())
+                InsightsView(vm: makeInsightsVM(), onLogMood: {
+                    selectedTab = .checkIn
+                })
             }
         }
         .tint(Color.rfAccent)
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView {
+                hasCompletedOnboarding = true
+                showOnboarding = false
+                selectedTab = .checkIn
+            }
+        }
+        .onAppear {
+            if !hasCompletedOnboarding {
+                showOnboarding = true
+            }
+        }
     }
 
     // Lazy ViewModel creation — each VM is created once and reused.

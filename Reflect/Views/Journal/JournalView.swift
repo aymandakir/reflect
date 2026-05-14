@@ -4,6 +4,7 @@ import SwiftUI
 struct JournalView: View {
     @Bindable var vm: JournalViewModel
     var onEdit: ((MoodEntry) -> Void)?
+    var onLogMood: (() -> Void)?
 
     var body: some View {
         NavigationStack {
@@ -57,11 +58,43 @@ struct JournalView: View {
     // MARK: - Empty State
 
     private var emptyState: some View {
-        ContentUnavailableView(
-            "No Entries Yet",
-            systemImage: "book.closed",
-            description: Text("Start a check-in to record your first mood.")
-        )
+        VStack(spacing: 24) {
+            Spacer()
+
+            Image(systemName: "book.closed")
+                .font(.system(size: 56, weight: .light))
+                .foregroundStyle(Color.rfAccent.opacity(0.5))
+
+            VStack(spacing: 10) {
+                Text("Your Journal Is Empty")
+                    .font(.rf.title2)
+                    .foregroundStyle(Color.rfTextPrimary)
+
+                Text("Every journey starts with a single step.\nLog your first mood and start building\na picture of your well-being.")
+                    .font(.rf.body)
+                    .foregroundStyle(Color.rfTextSecondary)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(3)
+            }
+
+            Button {
+                onLogMood?()
+            } label: {
+                Label("Log a Mood", systemImage: "plus.circle.fill")
+                    .font(.rf.headline)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 28)
+                    .padding(.vertical, 14)
+                    .background(Color.rfAccent, in: Capsule())
+                    .shadow(color: Color.rfAccent.opacity(0.3), radius: 10, y: 4)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 4)
+
+            Spacer()
+            Spacer()
+        }
+        .padding(.horizontal, 32)
     }
 
     private var backgroundGradient: some View {

@@ -69,6 +69,11 @@ final class InsightsViewModel {
         store.entries(lastDays: selectedRange.days).count
     }
 
+    /// True when the store has no entries at all (drives the empty state).
+    var hasNoEntries: Bool {
+        store.entries.isEmpty
+    }
+
     var streakDays: Int {
         let calendar = Calendar.current
         var streak = 0

@@ -74,7 +74,7 @@ final class MoodStore {
 
     private func load() {
         guard FileManager.default.fileExists(atPath: fileURL.path()) else {
-            entries = MoodEntry.sampleEntries
+            entries = []
             return
         }
         do {

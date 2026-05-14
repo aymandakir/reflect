@@ -4,18 +4,25 @@ import Charts
 /// Visual insights — mood trend chart, summary stats, and top tags.
 struct InsightsView: View {
     @Bindable var vm: InsightsViewModel
+    var onLogMood: (() -> Void)?
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    rangePicker
-                    moodChart
-                    statsRow
-                    topTagsCard
+            Group {
+                if vm.hasNoEntries {
+                    emptyState
+                } else {
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            rangePicker
+                            moodChart
+                            statsRow
+                            topTagsCard
+                        }
+                        .padding(.horizontal)
+                        .padding(.bottom, 40)
+                    }
                 }
-                .padding(.horizontal)
-                .padding(.bottom, 40)
             }
             .background(backgroundGradient)
             .navigationTitle("Insights")
@@ -151,6 +158,48 @@ struct InsightsView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    // MARK: - Empty State
+
+    private var emptyState: some View {
+        VStack(spacing: 24) {
+            Spacer()
+
+            Image(systemName: "chart.xyaxis.line")
+                .font(.system(size: 56, weight: .light))
+                .foregroundStyle(Color.rfAccent.opacity(0.5))
+
+            VStack(spacing: 10) {
+                Text("No Insights Yet")
+                    .font(.rf.title2)
+                    .foregroundStyle(Color.rfTextPrimary)
+
+                Text("Once you start logging moods, Reflect will\nreveal trends, streaks, and patterns to help\nyou understand yourself better.")
+                    .font(.rf.body)
+                    .foregroundStyle(Color.rfTextSecondary)
+                    .multilineTextAlignment(.center)
+                    .lineSpacing(3)
+            }
+
+            Button {
+                onLogMood?()
+            } label: {
+                Label("Log a Mood", systemImage: "plus.circle.fill")
+                    .font(.rf.headline)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 28)
+                    .padding(.vertical, 14)
+                    .background(Color.rfAccent, in: Capsule())
+                    .shadow(color: Color.rfAccent.opacity(0.3), radius: 10, y: 4)
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 4)
+
+            Spacer()
+            Spacer()
+        }
+        .padding(.horizontal, 32)
     }
 
     // MARK: - Background

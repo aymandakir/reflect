@@ -20,6 +20,7 @@
 		A100000011 /* CheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000011; };
 		A100000012 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000012; };
 		A100000013 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000013; };
+		A100000016 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000016; };
 		A100000014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B100000014; };
 		A100000015 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B100000015; };
 /* End PBXBuildFile section */
@@ -38,6 +39,7 @@
 		B100000011 /* CheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckInView.swift; sourceTree = "<group>"; };
 		B100000012 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		B100000013 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
+		B100000016 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B100000014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B100000015 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C100000001 /* Reflect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reflect.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -152,6 +154,7 @@
 				E100000012 /* CheckIn */,
 				E100000013 /* Journal */,
 				E100000014 /* Insights */,
+				E100000015 /* Onboarding */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -178,6 +181,14 @@
 				B100000013 /* InsightsView.swift */,
 			);
 			path = Insights;
+			sourceTree = "<group>";
+		};
+		E100000015 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				B100000016 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		E100000098 /* Preview Content */ = {
@@ -279,6 +290,7 @@
 				A100000011 /* CheckInView.swift in Sources */,
 				A100000012 /* JournalView.swift in Sources */,
 				A100000013 /* InsightsView.swift in Sources */,
+				A100000016 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
