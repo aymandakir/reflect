@@ -1,19 +1,35 @@
 # Reflect
 
-Reflect is an AI-assisted mood journal for iOS that makes emotional check-ins fast, beautiful, and insightful.
-Track how you feel in seconds, visualize your emotional patterns, and reflect with a clean, glassmorphism-inspired interface.
-
-> MVP status: In active development — core features are being built.
+A well-architected iOS mood journal built with SwiftUI, featuring a "Liquid Glass" glassmorphism design, local-first persistence, and full accessibility support.
 
 ---
 
 ## Features
 
-- **One-tap mood check-ins** — Log how you feel with a simple slider and a few taps.
-- **Emotion tags & notes** — Add context with tags (e.g. "work", "relationships", "health") and optional notes.
-- **Trends & insights** — View weekly and monthly charts to understand mood patterns over time.
-- **Liquid Glass UI** — Modern glassmorphism-inspired cards and panels with soft blur and depth.
-- **Privacy-first** — All data stored securely on-device by default.
+- **Fast mood check-ins** — Log how you feel in seconds with a 5-point mood scale, tags, and an optional note.
+- **Journal timeline** — Browse past entries grouped by day, with quick edit/delete actions.
+- **Insights dashboard** — View mood trends over the last 7 / 30 / 90 days with Swift Charts, streak tracking, and top tags.
+- **Liquid Glass UI** — Frosted-glass cards, rounded typography, and calm color tokens for a premium, modern feel.
+- **Local-first storage** — Entries are stored as JSON on-device via a lightweight persistence layer.
+- **First-run onboarding** — Three-page swipeable intro explaining the app, dismissed with a single tap.
+- **Accessible by default** — Dynamic Type, VoiceOver labels/hints, minimum tap targets, and screen-reader-friendly charts.
+- **Subtle haptics & animation** — Selection, success, and impact feedback; calm entrance animations on cards and charts.
+
+---
+
+## Tech Stack
+
+- **Language:** Swift, SwiftUI
+- **Architecture:** MVVM with a shared `MoodStore`
+- **Persistence:** JSON file I/O in the app's documents directory (ready to swap to SwiftData / Core Data)
+- **Charts:** Swift Charts (line + area)
+- **Design System:**
+  - Color tokens (`Color.rfAccent`, `Color.rfBackground`, etc.)
+  - Typography helpers (`.rf.title`, `.rf.body`, etc.) — all Dynamic Type-enabled
+  - Reusable `GlassCard` component using `ultraThinMaterial`
+  - `Haptics` helper for tactile feedback
+- **Minimum iOS:** 17.0
+- **Dependencies:** None (zero SPM / CocoaPods packages)
 
 ---
 
@@ -22,24 +38,10 @@ Track how you feel in seconds, visualize your emotional patterns, and reflect wi
 | Layer | Folder | Purpose |
 |-------|--------|---------|
 | **Model** | `Models/` | `MoodEntry` — Codable value type (id, date, score 1–5, tags, note) |
-| **Persistence** | `Services/Persistence/` | `MoodStore` — `@Observable` store, JSON file I/O |
+| **Persistence** | `Services/Persistence/` | `MoodStore` — `@Observable` store, JSON file I/O, CRUD + queries |
 | **ViewModels** | `ViewModels/` | One per screen; owns business logic, exposes derived state |
-| **Views** | `Views/{CheckIn,Journal,Insights}/` | SwiftUI screens, purely declarative |
-| **Design System** | `DesignSystem/` | Color tokens, typography scale, reusable `GlassCard` component |
-
-Pattern: **MVVM** (Model–View–ViewModel)
-Platform: iOS 17+, SwiftUI-only, zero external dependencies.
-
----
-
-## Tech Stack
-
-- **Language:** Swift, SwiftUI
-- **Architecture:** MVVM
-- **Minimum iOS:** iOS 17+
-- **Storage (MVP):** JSON file persistence (swap in SwiftData/CloudKit later)
-- **UI:** SwiftUI, custom blur/overlay components for glassmorphism
-- **Charts:** Swift Charts framework
+| **Views** | `Views/` | SwiftUI screens — CheckIn, Journal, Insights, Onboarding |
+| **Design System** | `DesignSystem/` | Color tokens, typography scale, GlassCard, Haptics |
 
 ---
 
@@ -58,33 +60,29 @@ Reflect/
   ├─ Views/
   │   ├─ CheckIn/CheckInView.swift
   │   ├─ Journal/JournalView.swift
-  │   └─ Insights/InsightsView.swift
+  │   ├─ Insights/InsightsView.swift
+  │   └─ Onboarding/OnboardingView.swift
   ├─ Services/
   │   └─ Persistence/MoodStore.swift
   ├─ DesignSystem/
   │   ├─ Colors/ColorTokens.swift
   │   ├─ Typography/Typography.swift
-  │   └─ Components/GlassCard.swift
+  │   └─ Components/
+  │       ├─ GlassCard.swift
+  │       └─ Haptics.swift
   └─ Assets.xcassets/
 ```
 
 ---
 
-## Core Screens (MVP)
+## Screens
 
-1. **Check-In** — Mood score (1–5), emotion tag chips, optional note field, save.
-2. **Journal** — Searchable, day-grouped list of past entries with swipe-to-delete.
-3. **Insights** — Swift Charts mood trend line, streak counter, average score, top tags.
-
----
-
-## Design Tokens
-
-The design system lives in `DesignSystem/` and provides:
-
-- **ColorTokens** — Adaptive light/dark palette with programmatic hex fallbacks
-- **Typography** — Rounded `.rf.*` font scale (largeTitle through caption)
-- **GlassCard** — Frosted-glass container (ultraThinMaterial + transparency + gradient border + soft shadow)
+| Screen | Description |
+|--------|-------------|
+| **Check-In** | 5-point mood selector, tag chips with flow layout, optional note, save with haptic + emoji animation |
+| **Journal** | Searchable, day-grouped list with context menus (edit/delete) and encouraging empty state |
+| **Insights** | Swift Charts mood trend (animated left-to-right reveal), stat cards, streak counter, top tags |
+| **Onboarding** | 3-page full-screen flow explaining mood tracking, app features, and privacy — shown on first launch |
 
 ---
 
@@ -116,7 +114,9 @@ The design system lives in `DesignSystem/` and provides:
 
 ## Roadmap
 
-- [ ] Onboarding flow
+- [x] Onboarding flow
+- [x] Haptics & entrance animations
+- [x] Accessibility (Dynamic Type, VoiceOver)
 - [ ] SwiftData migration for richer persistence
 - [ ] Supabase sync for cross-device backups
 - [ ] Home screen widgets for quick check-ins
