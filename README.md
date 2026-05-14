@@ -1,6 +1,6 @@
-# SereneState 🌙
+# Reflect 🌙
 
-SereneState is an AI-assisted mood journal for iOS that makes emotional check-ins fast, beautiful, and insightful.  
+Reflect is an AI-assisted mood journal for iOS that makes emotional check-ins fast, beautiful, and insightful.  
 Track how you feel in seconds, visualize your emotional patterns, and reflect with a clean, glassmorphism-inspired interface.
 
 > MVP status: 🚧 In active development – core features are being built.
@@ -20,7 +20,7 @@ Track how you feel in seconds, visualize your emotional patterns, and reflect wi
 
 ## 🧠 Concept & Goals
 
-SereneState is built as a portfolio-quality app to explore:
+Reflect is built as a portfolio-quality app to explore:
 
 - **Mental wellbeing UX** – Reduce friction so check-ins take seconds, not minutes.
 - **Modern iOS design** – Experiment with Apple’s “Liquid Glass” aesthetic using SwiftUI.
@@ -46,8 +46,8 @@ This project is intentionally scoped as an MVP so new features can be added incr
 ## 📁 Project Structure
 
 ```text
-SereneState/
-  ├─ SereneStateApp.swift
+Reflect/
+  ├─ ReflectApp.swift
   ├─ Models/
   ├─ ViewModels/
   ├─ Views/
@@ -99,16 +99,16 @@ SereneState/
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/YOUR_GITHUB_USERNAME/serene-state-ios.git
-   cd serene-state-ios
+   git clone https://github.com/YOUR_GITHUB_USERNAME/reflect-mood-journal-ios.git
+   cd reflect-mood-journal-ios
    ```
 
 2. Open the project in Xcode:
 
    ```bash
-   open SereneState.xcodeproj
+   open Reflect.xcodeproj
    # or
-   open SereneState.xcworkspace
+   open Reflect.xcworkspace
    ```
 
 3. Build & run on simulator or device (⌘ + R).
