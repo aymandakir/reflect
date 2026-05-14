@@ -62,8 +62,10 @@ struct JournalView: View {
             Spacer()
 
             Image(systemName: "book.closed")
-                .font(.system(size: 56, weight: .light))
+                .font(.system(.largeTitle, design: .default).weight(.light))
+                .imageScale(.large)
                 .foregroundStyle(Color.rfAccent.opacity(0.5))
+                .accessibilityHidden(true)
 
             VStack(spacing: 10) {
                 Text("Your Journal Is Empty")
@@ -110,8 +112,9 @@ struct JournalEntryRow: View {
     var body: some View {
         HStack(spacing: 14) {
             Text(entry.emoji)
-                .font(.system(size: 36))
+                .font(.system(.title, design: .default))
                 .frame(width: 50)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
@@ -148,6 +151,22 @@ struct JournalEntryRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityDescription)
+        .accessibilityHint("Long press for options")
+    }
+
+    private var accessibilityDescription: String {
+        var parts: [String] = []
+        parts.append("\(entry.label), mood \(entry.moodScore) of 5")
+        parts.append("at \(entry.date.formatted(date: .omitted, time: .shortened))")
+        if let note = entry.note, !note.isEmpty {
+            parts.append(note)
+        }
+        if !entry.tags.isEmpty {
+            parts.append("Tags: \(entry.tags.joined(separator: ", "))")
+        }
+        return parts.joined(separator: ". ")
     }
 }
 

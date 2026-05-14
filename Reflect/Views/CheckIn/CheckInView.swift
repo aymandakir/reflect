@@ -35,20 +35,26 @@ struct CheckInView: View {
                     .font(.rf.title2)
                     .foregroundStyle(Color.rfTextPrimary)
 
-                Text(MoodEntry(moodScore: vm.moodScore).emoji)
-                    .font(.system(size: 72))
+                let mood = MoodEntry(moodScore: vm.moodScore)
+                Text(mood.emoji)
+                    .font(.system(.largeTitle, design: .default).weight(.regular))
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .scaleEffect(savedBounce ? 1.35 : (animatePulse ? 1.15 : 1.0))
                     .opacity(savedBounce ? 0.0 : 1.0)
                     .animation(.spring(response: 0.35, dampingFraction: 0.5), value: vm.moodScore)
                     .animation(.easeOut(duration: 0.5), value: savedBounce)
+                    .accessibilityHidden(true)
 
-                Text(MoodEntry(moodScore: vm.moodScore).label)
+                Text(mood.label)
                     .font(.rf.headline)
                     .foregroundStyle(Color.rfTextSecondary)
+                    .accessibilityHidden(true)
 
                 moodSlider
             }
             .frame(maxWidth: .infinity)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Mood selector")
         }
         .onChange(of: vm.moodScore) { _, _ in
             Haptics.play(.selection)
@@ -63,6 +69,8 @@ struct CheckInView: View {
         VStack(spacing: 8) {
             HStack {
                 ForEach(1...5, id: \.self) { score in
+                    let scoreEntry = MoodEntry(moodScore: score)
+                    let isSelected = vm.moodScore == score
                     Button {
                         withAnimation(.spring(response: 0.3)) {
                             vm.moodScore = score
@@ -70,16 +78,15 @@ struct CheckInView: View {
                     } label: {
                         Text("\(score)")
                             .font(.rf.headline)
-                            .frame(width: 48, height: 48)
-                            .background(
-                                vm.moodScore == score
-                                    ? Color.rfAccent
-                                    : Color.rfAccentSoft
-                            )
-                            .foregroundStyle(vm.moodScore == score ? .white : Color.rfTextPrimary)
+                            .frame(minWidth: 44, minHeight: 44)
+                            .background(isSelected ? Color.rfAccent : Color.rfAccentSoft)
+                            .foregroundStyle(isSelected ? .white : Color.rfTextPrimary)
                             .clipShape(Circle())
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Mood \(score) of 5, \(scoreEntry.label)")
+                    .accessibilityHint(isSelected ? "Currently selected" : "Double tap to select")
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
                 }
             }
 
@@ -90,6 +97,7 @@ struct CheckInView: View {
             }
             .foregroundStyle(Color.rfTextSecondary)
             .padding(.horizontal, 4)
+            .accessibilityHidden(true)
         }
     }
 
@@ -174,7 +182,9 @@ struct CheckInView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .padding(.bottom, 32)
             }
+            .accessibilityHidden(true)
             .onAppear {
+                AccessibilityNotification.Announcement("Mood entry saved").post()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     withAnimation { vm.showConfirmation = false }
                 }
@@ -212,6 +222,9 @@ struct TagChip: View {
                 .clipShape(Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
+        .accessibilityHint(isSelected ? "Selected. Double tap to remove" : "Double tap to add")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 

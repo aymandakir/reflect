@@ -51,6 +51,7 @@ struct InsightsView: View {
                 Text("Mood Over Time")
                     .font(.rf.headline)
                     .foregroundStyle(Color.rfTextPrimary)
+                    .accessibilityAddTraits(.isHeader)
 
                 if vm.chartData.contains(where: { $0.averageScore > 0 }) {
                     Chart(vm.chartData) { point in
@@ -124,6 +125,8 @@ struct InsightsView: View {
                             chartRevealed = true
                         }
                     }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(chartAccessibilityLabel)
                 } else {
                     Text("No data for this period.")
                         .font(.rf.body)
@@ -139,9 +142,18 @@ struct InsightsView: View {
 
     private var statsRow: some View {
         HStack(spacing: 12) {
-            StatCard(title: "Average", value: averageFormatted, icon: "chart.bar.fill")
-            StatCard(title: "Entries", value: "\(vm.totalEntries)", icon: "list.bullet")
-            StatCard(title: "Streak", value: "\(vm.streakDays)d", icon: "flame.fill")
+            StatCard(
+                title: "Average", value: averageFormatted, icon: "chart.bar.fill",
+                voiceOverLabel: "Average mood last \(vm.selectedRange.rawValue): \(averageFormatted)"
+            )
+            StatCard(
+                title: "Entries", value: "\(vm.totalEntries)", icon: "list.bullet",
+                voiceOverLabel: "\(vm.totalEntries) entries in last \(vm.selectedRange.rawValue)"
+            )
+            StatCard(
+                title: "Streak", value: "\(vm.streakDays)d", icon: "flame.fill",
+                voiceOverLabel: "Current streak: \(vm.streakDays) days"
+            )
         }
     }
 
@@ -158,6 +170,7 @@ struct InsightsView: View {
                 Text("Top Tags")
                     .font(.rf.headline)
                     .foregroundStyle(Color.rfTextPrimary)
+                    .accessibilityAddTraits(.isHeader)
 
                 if vm.topTags.isEmpty {
                     Text("No tags recorded yet.")
@@ -174,11 +187,23 @@ struct InsightsView: View {
                                 .font(.rf.caption)
                                 .foregroundStyle(Color.rfTextSecondary)
                         }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("\(item.tag), used \(item.count) \(item.count == 1 ? "time" : "times")")
                     }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+
+    private var chartAccessibilityLabel: String {
+        let filled = vm.chartData.filter { $0.averageScore > 0 }
+        guard !filled.isEmpty else { return "Mood chart, no data" }
+        let scores = filled.map(\.averageScore)
+        let avg = scores.reduce(0, +) / Double(scores.count)
+        let lo = scores.min() ?? 0
+        let hi = scores.max() ?? 0
+        return "Mood chart for last \(vm.selectedRange.rawValue). Average \(String(format: "%.1f", avg)), low \(String(format: "%.1f", lo)), high \(String(format: "%.1f", hi)), across \(filled.count) days"
     }
 
     // MARK: - Empty State
@@ -188,8 +213,10 @@ struct InsightsView: View {
             Spacer()
 
             Image(systemName: "chart.xyaxis.line")
-                .font(.system(size: 56, weight: .light))
+                .font(.system(.largeTitle, design: .default).weight(.light))
+                .imageScale(.large)
                 .foregroundStyle(Color.rfAccent.opacity(0.5))
+                .accessibilityHidden(true)
 
             VStack(spacing: 10) {
                 Text("No Insights Yet")
@@ -241,6 +268,7 @@ struct StatCard: View {
     let title: String
     let value: String
     let icon: String
+    var voiceOverLabel: String? = nil
 
     var body: some View {
         GlassCard(cornerRadius: 18, padding: 14) {
@@ -248,6 +276,7 @@ struct StatCard: View {
                 Image(systemName: icon)
                     .font(.rf.title3)
                     .foregroundStyle(Color.rfAccent)
+                    .accessibilityHidden(true)
 
                 Text(value)
                     .font(.rf.title2)
@@ -258,6 +287,8 @@ struct StatCard: View {
                     .foregroundStyle(Color.rfTextSecondary)
             }
             .frame(maxWidth: .infinity)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(voiceOverLabel ?? "\(title): \(value)")
         }
     }
 }

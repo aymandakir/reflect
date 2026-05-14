@@ -57,10 +57,12 @@ struct OnboardingView: View {
             Spacer()
 
             Image(systemName: page.icon)
-                .font(.system(size: 64, weight: .light))
+                .font(.system(.largeTitle, design: .default).weight(.light))
+                .imageScale(.large)
                 .foregroundStyle(page.accent)
                 .symbolEffect(.pulse, options: .repeating.speed(0.5))
                 .frame(height: 90)
+                .accessibilityHidden(true)
 
             VStack(spacing: 14) {
                 Text(page.title)
@@ -106,6 +108,9 @@ struct OnboardingView: View {
                     .animation(.spring(response: 0.35), value: currentPage)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Page \(currentPage + 1) of \(pages.count)")
+        .accessibilityValue(pages[currentPage].title)
     }
 
     private var nextButton: some View {
