@@ -12,17 +12,22 @@ import SwiftUI
 struct GlassCard<Content: View>: View {
     var cornerRadius: CGFloat
     var padding: CGFloat
+    var animate: Bool
     @ViewBuilder var content: () -> Content
 
     init(
         cornerRadius: CGFloat = 24,
         padding: CGFloat = 20,
+        animate: Bool = true,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.cornerRadius = cornerRadius
         self.padding = padding
+        self.animate = animate
         self.content = content
     }
+
+    @State private var appeared = false
 
     var body: some View {
         content()
@@ -46,6 +51,14 @@ struct GlassCard<Content: View>: View {
             )
             .shadow(color: .black.opacity(0.06), radius: 16, x: 0, y: 8)
             .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
+            .opacity(animate ? (appeared ? 1 : 0) : 1)
+            .scaleEffect(animate ? (appeared ? 1 : 0.96) : 1)
+            .onAppear {
+                guard animate, !appeared else { return }
+                withAnimation(.easeOut(duration: 0.45)) {
+                    appeared = true
+                }
+            }
     }
 }
 

@@ -21,6 +21,7 @@
 		A100000012 /* JournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000012; };
 		A100000013 /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000013; };
 		A100000016 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000016; };
+		A100000017 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B100000017; };
 		A100000014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B100000014; };
 		A100000015 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B100000015; };
 /* End PBXBuildFile section */
@@ -40,6 +41,7 @@
 		B100000012 /* JournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalView.swift; sourceTree = "<group>"; };
 		B100000013 /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		B100000016 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		B100000017 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		B100000014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B100000015 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C100000001 /* Reflect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reflect.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +120,7 @@
 			isa = PBXGroup;
 			children = (
 				B100000006 /* GlassCard.swift */,
+				B100000017 /* Haptics.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				A100000012 /* JournalView.swift in Sources */,
 				A100000013 /* InsightsView.swift in Sources */,
 				A100000016 /* OnboardingView.swift in Sources */,
+				A100000017 /* Haptics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

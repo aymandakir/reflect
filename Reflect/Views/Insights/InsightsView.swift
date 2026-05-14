@@ -6,6 +6,8 @@ struct InsightsView: View {
     @Bindable var vm: InsightsViewModel
     var onLogMood: (() -> Void)?
 
+    @State private var chartRevealed = false
+
     var body: some View {
         NavigationStack {
             Group {
@@ -103,6 +105,25 @@ struct InsightsView: View {
                         }
                     }
                     .frame(height: 200)
+                    .mask(
+                        GeometryReader { geo in
+                            Rectangle()
+                                .frame(width: chartRevealed ? geo.size.width : 0)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    )
+                    .onAppear {
+                        chartRevealed = false
+                        withAnimation(.easeOut(duration: 0.9).delay(0.2)) {
+                            chartRevealed = true
+                        }
+                    }
+                    .onChange(of: vm.selectedRange) { _, _ in
+                        chartRevealed = false
+                        withAnimation(.easeOut(duration: 0.9).delay(0.15)) {
+                            chartRevealed = true
+                        }
+                    }
                 } else {
                     Text("No data for this period.")
                         .font(.rf.body)

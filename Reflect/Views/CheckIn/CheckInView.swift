@@ -5,6 +5,7 @@ struct CheckInView: View {
     @Bindable var vm: CheckInViewModel
 
     @State private var animatePulse = false
+    @State private var savedBounce = false
 
     var body: some View {
         NavigationStack {
@@ -34,10 +35,12 @@ struct CheckInView: View {
                     .font(.rf.title2)
                     .foregroundStyle(Color.rfTextPrimary)
 
-                Text(vm.moodScore == 3 ? "😐" : MoodEntry(moodScore: vm.moodScore).emoji)
+                Text(MoodEntry(moodScore: vm.moodScore).emoji)
                     .font(.system(size: 72))
-                    .scaleEffect(animatePulse ? 1.15 : 1.0)
+                    .scaleEffect(savedBounce ? 1.35 : (animatePulse ? 1.15 : 1.0))
+                    .opacity(savedBounce ? 0.0 : 1.0)
                     .animation(.spring(response: 0.35, dampingFraction: 0.5), value: vm.moodScore)
+                    .animation(.easeOut(duration: 0.5), value: savedBounce)
 
                 Text(MoodEntry(moodScore: vm.moodScore).label)
                     .font(.rf.headline)
@@ -48,6 +51,7 @@ struct CheckInView: View {
             .frame(maxWidth: .infinity)
         }
         .onChange(of: vm.moodScore) { _, _ in
+            Haptics.play(.selection)
             withAnimation { animatePulse = true }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 withAnimation { animatePulse = false }
@@ -104,6 +108,7 @@ struct CheckInView: View {
                             label: tag,
                             isSelected: vm.selectedTags.contains(tag)
                         ) {
+                            Haptics.play(.light)
                             vm.toggleTag(tag)
                         }
                     }
@@ -134,7 +139,14 @@ struct CheckInView: View {
     // MARK: - Save
 
     private var saveButton: some View {
-        Button(action: vm.save) {
+        Button {
+            savedBounce = true
+            Haptics.play(.success)
+            vm.save()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                savedBounce = false
+            }
+        } label: {
             Text(vm.isEditing ? "Update Entry" : "Save Check-In")
                 .font(.rf.headline)
                 .foregroundStyle(.white)
