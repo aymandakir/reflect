@@ -1,103 +1,86 @@
 import SwiftUI
 
-/// A frosted-glass card container inspired by Apple's "Liquid Glass" aesthetic.
-///
-/// Provides a translucent background with blur, a subtle white border,
-/// and a soft shadow — adapts to both light and dark mode.
-///
-/// Usage:
-///   GlassCard {
-///       Text("Hello, world!")
-///   }
+/// Visual weight for glass cards.
+enum GlassCardStyle {
+    case standard
+    case elevated
+}
+
+/// Single source of truth for Soft Aurora Glass cards.
 struct GlassCard<Content: View>: View {
-    var cornerRadius: CGFloat
+    var style: GlassCardStyle
     var padding: CGFloat
     var animate: Bool
+    var moodTint: Int?
     @ViewBuilder var content: () -> Content
 
+    private let cornerRadius: CGFloat = 24
+
     init(
-        cornerRadius: CGFloat = 24,
+        style: GlassCardStyle = .standard,
         padding: CGFloat = 20,
         animate: Bool = true,
+        moodTint: Int? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) {
-        self.cornerRadius = cornerRadius
+        self.style = style
         self.padding = padding
         self.animate = animate
+        self.moodTint = moodTint
         self.content = content
     }
 
-    @State private var appeared = false
+    private var tintColor: Color? {
+        guard let moodTint else { return nil }
+        return MoodEntry(moodScore: moodTint).accentColor
+    }
+
+    private var shadowRadius: CGFloat { style == .elevated ? 28 : 20 }
+    private var shadowY: CGFloat { style == .elevated ? 14 : 10 }
 
     var body: some View {
         content()
             .padding(padding)
-            .background(.ultraThinMaterial)
-            .background(Color.rfSurface)
+            .background { cardBackground }
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .strokeBorder(
+                    .strokeBorder(Color.rfGlassStroke, lineWidth: 1)
+            )
+            .shadow(color: Color.rfGlassShadow, radius: shadowRadius, x: 0, y: shadowY)
+            .reflectCardAppear(enabled: animate, heroLift: style == .elevated)
+            .animation(.easeInOut(duration: ReflectMotion.Duration.standard), value: moodTint)
+    }
+
+    @ViewBuilder
+    private var cardBackground: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(.ultraThinMaterial)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                .fill(Color.rfCardBackground)
+            if let tintColor {
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(
                         LinearGradient(
-                            colors: [
-                                .white.opacity(0.45),
-                                .white.opacity(0.10),
-                            ],
+                            colors: [tintColor.opacity(0.12), tintColor.opacity(0.02)],
                             startPoint: .topLeading,
                             endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
+                        )
                     )
-            )
-            .shadow(color: .black.opacity(0.06), radius: 16, x: 0, y: 8)
-            .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
-            .opacity(animate ? (appeared ? 1 : 0) : 1)
-            .scaleEffect(animate ? (appeared ? 1 : 0.96) : 1)
-            .onAppear {
-                guard animate, !appeared else { return }
-                withAnimation(.easeOut(duration: 0.45)) {
-                    appeared = true
-                }
             }
-    }
-}
-
-// MARK: - Convenience Modifier
-
-extension View {
-    /// Wrap this view in a GlassCard.
-    func glassCard(cornerRadius: CGFloat = 24, padding: CGFloat = 20) -> some View {
-        GlassCard(cornerRadius: cornerRadius, padding: padding) {
-            self
         }
     }
 }
 
-// MARK: - Preview
-
-#Preview("GlassCard — Light") {
-    ZStack {
-        LinearGradient(
-            colors: [Color.rfAccent.opacity(0.3), Color.rfBackground],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-        .ignoresSafeArea()
-
-        VStack(spacing: 16) {
-            GlassCard {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Reflect").font(.rf.title)
-                    Text("Your mood journal, beautifully simple.")
-                        .font(.rf.body)
-                        .foregroundStyle(Color.rfTextSecondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.horizontal)
-
-            Text("How are you feeling?")
-                .glassCard(cornerRadius: 16, padding: 12)
+extension View {
+    func glassCard(
+        style: GlassCardStyle = .standard,
+        padding: CGFloat = 20,
+        moodTint: Int? = nil
+    ) -> some View {
+        GlassCard(style: style, padding: padding, moodTint: moodTint) {
+            self
         }
     }
 }

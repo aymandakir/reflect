@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// A single mood journal entry captured during a check-in.
 struct MoodEntry: Identifiable, Codable, Equatable {
@@ -46,6 +47,18 @@ struct MoodEntry: Identifiable, Codable, Equatable {
         case 4: return "Good"
         case 5: return "Great"
         default: return "Okay"
+        }
+    }
+
+    /// Accent used for mood-reactive backgrounds and glass tints.
+    var accentColor: Color {
+        switch moodScore {
+        case 1: return .rfMoodLow
+        case 2: return Color(hex: "FF9F6B")
+        case 3: return .rfMoodMid
+        case 4: return Color(hex: "8FD9A8")
+        case 5: return .rfMoodHigh
+        default: return .rfAccentPrimary
         }
     }
 

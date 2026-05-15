@@ -74,6 +74,10 @@ final class InsightsViewModel {
         store.entries.isEmpty
     }
 
+    var totalEntryCount: Int { store.entries.count }
+
+    var isFirstStoryPage: Bool { totalEntryCount == 1 }
+
     var streakDays: Int {
         let calendar = Calendar.current
         var streak = 0

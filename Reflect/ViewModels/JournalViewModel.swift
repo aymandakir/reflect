@@ -14,6 +14,11 @@ final class JournalViewModel {
 
     // MARK: - Derived Data
 
+    var totalEntryCount: Int { store.entries.count }
+
+    /// True when the user has logged exactly one check-in (post–guided onboarding).
+    var isFirstStoryPage: Bool { totalEntryCount == 1 }
+
     var filteredEntries: [MoodEntry] {
         guard !searchText.isEmpty else { return store.entries }
         let query = searchText.lowercased()

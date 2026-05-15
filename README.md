@@ -127,11 +127,24 @@ Reflect/
 
 ## Screenshots
 
-> Add screenshots or GIFs here once UI is ready.
-
-| Check-in | Journal | Insights |
-|----------|---------|----------|
-| IMAGE_1  | IMAGE_2 | IMAGE_3  |
+<table>
+  <tr>
+    <th align="center">Check-in</th>
+    <th align="center">Journal</th>
+    <th align="center">Insights</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="./docs/screenshots/check-in.png" alt="Check-in — mood scale, tags, and seal button" width="260" />
+    </td>
+    <td align="center">
+      <img src="./docs/screenshots/journal.png" alt="Journal — day-grouped entries with search" width="260" />
+    </td>
+    <td align="center">
+      <img src="./docs/screenshots/insights.png" alt="Insights — mood chart, stats, and top tags" width="260" />
+    </td>
+  </tr>
+</table>
 
 ---
 

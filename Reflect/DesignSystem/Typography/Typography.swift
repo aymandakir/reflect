@@ -1,45 +1,66 @@
 import SwiftUI
 
-/// Typographic scale that respects Dynamic Type.
-///
-/// Every token maps to a semantic `Font.TextStyle`, which means the system
-/// automatically scales text for the user's preferred content size.
-/// The `.rounded` design gives Reflect its signature friendly feel.
+/// Soft Aurora Glass typographic scale — Dynamic Type via semantic text styles.
 ///
 /// Usage:
-///   Text("Title").font(.rf.title)
-///   Text("Body").font(.rf.body)
+///   Text("Reflect").font(.rf.largeTitle)
+///   Text("3.8").font(.rf.number)
 extension Font {
     enum rf {
         static let largeTitle = Font.system(.largeTitle, design: .rounded, weight: .bold)
-        static let title      = Font.system(.title,      design: .rounded, weight: .bold)
-        static let title2     = Font.system(.title2,     design: .rounded, weight: .semibold)
-        static let title3     = Font.system(.title3,     design: .rounded, weight: .semibold)
-        static let headline   = Font.system(.headline,   design: .rounded, weight: .semibold)
-        static let body       = Font.system(.body,       design: .default, weight: .regular)
-        static let callout    = Font.system(.callout,    design: .default, weight: .regular)
-        static let subhead    = Font.system(.subheadline,design: .default, weight: .regular)
-        static let footnote   = Font.system(.footnote,   design: .default, weight: .regular)
-        static let caption    = Font.system(.caption,    design: .rounded, weight: .medium)
-        static let caption2   = Font.system(.caption2,   design: .rounded, weight: .regular)
+        static let title      = Font.system(.title, design: .rounded, weight: .bold)
+        static let headline   = Font.system(.headline, design: .rounded, weight: .semibold)
+        static let body       = Font.system(.body, design: .default, weight: .regular)
+        static let caption    = Font.system(.caption, design: .rounded, weight: .medium)
+
+        /// Mood scores, stats, and numeric insights.
+        static let number = Font.system(.title, design: .rounded, weight: .bold)
+            .monospacedDigit()
+
+        /// Large decorative emoji (mood hero, summary).
+        static let emoji = Font.system(.largeTitle, design: .rounded)
+
+        /// Row / list emoji (journal entries).
+        static let emojiRow = Font.system(.title2, design: .rounded)
+
+        /// SF Symbol icons in empty states.
+        static let symbol = Font.system(.title, design: .rounded)
+
+        // MARK: Aliases (migrate screens gradually)
+
+        static let title2   = title
+        static let title3   = headline
+        static let subhead  = body
+        static let callout  = body
+        static let footnote = caption
+        static let caption2 = caption
     }
 }
 
-// MARK: - View Modifiers
+// MARK: - Text style modifiers
 
 extension View {
+    func rfLargeTitle() -> some View {
+        font(.rf.largeTitle).foregroundStyle(Color.rfTextPrimary)
+    }
+
     func rfTitle() -> some View {
-        self.font(.rf.title)
-            .foregroundStyle(Color.rfTextPrimary)
+        font(.rf.title).foregroundStyle(Color.rfTextPrimary)
+    }
+
+    func rfHeadline() -> some View {
+        font(.rf.headline).foregroundStyle(Color.rfTextPrimary)
     }
 
     func rfBody() -> some View {
-        self.font(.rf.body)
-            .foregroundStyle(Color.rfTextPrimary)
+        font(.rf.body).foregroundStyle(Color.rfTextPrimary)
     }
 
     func rfCaption() -> some View {
-        self.font(.rf.caption)
-            .foregroundStyle(Color.rfTextSecondary)
+        font(.rf.caption).foregroundStyle(Color.rfTextMuted)
+    }
+
+    func rfNumber() -> some View {
+        font(.rf.number).foregroundStyle(Color.rfTextPrimary)
     }
 }

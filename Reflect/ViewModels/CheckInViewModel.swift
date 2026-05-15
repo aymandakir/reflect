@@ -31,22 +31,29 @@ final class CheckInViewModel {
     // MARK: - Actions
 
     func save() {
+        _ = sealEntry(persist: true)
+        showConfirmation = true
+        resetForm()
+    }
+
+    /// Builds an entry from current form state; optionally persists to the store.
+    @discardableResult
+    func sealEntry(persist: Bool = true) -> MoodEntry {
         if let existing = editingEntry {
             var updated = existing
             updated.moodScore = moodScore
             updated.note = note.isEmpty ? nil : note
             updated.tags = Array(selectedTags)
-            store.update(updated)
-        } else {
-            let entry = MoodEntry(
-                moodScore: moodScore,
-                tags: Array(selectedTags),
-                note: note.isEmpty ? nil : note
-            )
-            store.add(entry)
+            if persist { store.update(updated) }
+            return updated
         }
-        showConfirmation = true
-        resetForm()
+        let entry = MoodEntry(
+            moodScore: moodScore,
+            tags: Array(selectedTags),
+            note: note.isEmpty ? nil : note
+        )
+        if persist { store.add(entry) }
+        return entry
     }
 
     func beginEditing(_ entry: MoodEntry) {

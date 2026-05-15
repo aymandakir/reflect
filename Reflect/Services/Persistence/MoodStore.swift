@@ -14,9 +14,19 @@ final class MoodStore {
         return docs.appending(path: "mood_entries.json")
     }()
 
+    private var persistsToDisk = true
+
     init() {
         load()
     }
+
+    #if DEBUG
+    /// In-memory store for SwiftUI previews — does not read from or write to disk.
+    init(previewEntries: [MoodEntry]) {
+        persistsToDisk = false
+        entries = previewEntries.sorted { $0.date > $1.date }
+    }
+    #endif
 
     // MARK: - CRUD
 
@@ -64,6 +74,7 @@ final class MoodStore {
     // MARK: - Persistence (JSON file)
 
     private func save() {
+        guard persistsToDisk else { return }
         do {
             let data = try JSONEncoder().encode(entries)
             try data.write(to: fileURL, options: .atomic)
